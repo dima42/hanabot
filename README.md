@@ -4,7 +4,7 @@ python simulator.py
 
 current stats:
 
-BasicPlayer and BasicPlayer: 18.6 +/- 2.6 pts
+BasicPlayer and BasicPlayer: 18.1 +/- 2.6 pts
 
 to write a new player:
 
