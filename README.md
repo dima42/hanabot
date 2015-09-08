@@ -1,6 +1,10 @@
-to run:
+to run simulation:
 
-python simulator.py
+python play.py 2 2 10000
+
+to play with computer:
+
+python play.py 0 2 1
 
 current stats:
 
