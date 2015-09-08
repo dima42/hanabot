@@ -18,8 +18,8 @@ class HumanPlayer(Player):
         print [(c.color, c.number, c.color_clued, c.number_clued)
                 for c in gamestate.player_cards[(self.num+1)%2]]
         print "own hand: "
-        print [(c.color_clued, c.number_clued)
-                for c in gamestate.player_cards[(self.num+1)%2]]
+        print [(c.color if c.color_clued else "", c.number if c.number_clued else "")
+                for c in gamestate.player_cards[self.num]]
         print "enter move: "
         move = raw_input().split(" ")
         move[1] = int(move[1]) if move[1] in '012345' else move[1]
