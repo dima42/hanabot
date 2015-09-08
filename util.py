@@ -1,6 +1,5 @@
 def known_legal(card, gamestate):
     # TODO need to implement discard check here
-    legal = False
     return (card.number_clued and card.color_clued and
             gamestate.stacks[card.color] == (card.number - 1))
 
@@ -29,6 +28,23 @@ def newest_just_clued(own_cards, gamestate):
                 return i
     return False
 
+def newest_card_clued(clue, partner_cards):
+        for i in range(4, -1, -1):
+            card = partner_cards[i]
+            if (clue == card.color and not card.color_clued or
+                clue == card.number and not card.number_clued):
+                return i
+
+def num_cards_clued(clue, partner_cards):
+    count = 0
+    for i in range(4, -1, -1):
+        card = partner_cards[i]
+        if (clue == card.color and not card.color_clued or
+            clue == card.number and not card.number_clued):
+            count += 1
+    return count
+
+
 def partner_playable_clue(partner_cards, gamestate, ordering='newest', full_knowledge=False):
     """
     if partner has a card that can be played, and clued such that it is 
@@ -48,29 +64,13 @@ def partner_playable_clue(partner_cards, gamestate, ordering='newest', full_know
     if not playable_clues:
         return False
 
-    def newest_card_clued(clue):
-        for i in range(4, -1, -1):
-            card = partner_cards[i]
-            #print clue, card.color, card.number, card.color_clued, card.number_clued
-            if (clue == card.color and not card.color_clued or
-                clue == card.number and not card.number_clued):
-                return i
-    def num_cards_clued(clue):
-        count = 0
-        for i in range(4, -1, -1):
-            card = partner_cards[i]
-            if (clue == card.color and not card.color_clued or
-                clue == card.number and not card.number_clued):
-                count += 1 
-        return count
-
     if ordering == 'newest':
         # newest = 4, want so want -4 to be smallest num
-        playable_clues.sort(key = lambda clue: -newest_card_clued(clue))
+        playable_clues.sort(key = lambda clue: -newest_card_clued(clue, partner_cards))
     if ordering == 'oldest':
-        playable_clues.sort(key = lambda clue: newest_card_clued(clue))
+        playable_clues.sort(key = lambda clue: newest_card_clued(clue, partner_cards))
     if ordering == 'mode':
-        playable_clues.sort(key = lambda clue: -num_cards_clued(clue))
+        playable_clues.sort(key = lambda clue: -num_cards_clued(clue, partner_cards))
 
     return playable_clues[0]
 
@@ -89,20 +89,19 @@ def get_all_playable_clues(partner_cards, gamestate, full_knowledge=False):
             if full_knowledge:
                 if card.number_clued:
                     playable_clues.append(card.color)
-                elif card.color_clued:
+                if card.color_clued:
                     playable_clues.append(card.number)
             # will this clue interfere with something newer?
-            else:
-                color_used = False
-                number_used = False
-                for j in range(4, i, -1):
-                    conflict_card = partner_cards[j]
-                    color_used |= conflict_card.color == card.color
-                    number_used |= conflict_card.number == card.number
-                if not color_used and not card.color_clued:
-                    playable_clues.append(card.color)
-                if not number_used and not card.number_clued:
-                    playable_clues.append(card.number)
+            color_used = False
+            number_used = False
+            for j in range(4, i, -1):
+                conflict_card = partner_cards[j]
+                color_used |= conflict_card.color == card.color
+                number_used |= conflict_card.number == card.number
+            if not color_used and not card.color_clued:
+                playable_clues.append(card.color)
+            if not number_used and not card.number_clued:
+                playable_clues.append(card.number)
     return playable_clues
 
 def known_irrelevant(cards, gamestate):

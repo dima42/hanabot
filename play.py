@@ -21,7 +21,7 @@ play(players.HumanPlayer(0), players.BasicPlayer(1, debug=True))
 """
 results = []
 for i in range(10000):
-    results.append(play(players.BasicPlayer(0), players.BasicPlayer(1)))
+    results.append(play(players.CardStatePlayer(0), players.CardStatePlayer(1)))
 
 
 print np.average(results), "+-/", np.std(results), Counter(results)[24], Counter(results)[25]

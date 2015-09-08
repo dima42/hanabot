@@ -50,7 +50,7 @@ class GameState(object):
 
     def deal(self):
         if self.debug:
-            random.seed(6)
+            random.seed(10)
         card_generator = itertools.product('bgrwy', '1112233445')
         self.deck = [self.Card(j[0], int(j[1])) for j in card_generator]
         random.shuffle(self.deck)
